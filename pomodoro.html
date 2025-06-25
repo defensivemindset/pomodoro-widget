@@ -1,0 +1,525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.2">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.7px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;title&gt;Customizable Pomodoro Timer&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;style&gt;</span></p>
+<p class="p1"><span class="s1">       /* Basic Reset &amp; Body Styling */</span></p>
+<p class="p1"><span class="s1">       body {</span></p>
+<p class="p1"><span class="s1">           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;</span></p>
+<p class="p1"><span class="s1">           display: flex;</span></p>
+<p class="p1"><span class="s1">           justify-content: center;</span></p>
+<p class="p1"><span class="s1">           align-items: center;</span></p>
+<p class="p1"><span class="s1">           min-height: 100vh;</span></p>
+<p class="p1"><span class="s1">           margin: 0;</span></p>
+<p class="p1"><span class="s1">           background-color: #f6f8fa; /* Light background to blend with Notion */</span></p>
+<p class="p1"><span class="s1">           color: #333;</span></p>
+<p class="p1"><span class="s1">           overflow: hidden; /* Prevent scrollbars if embedded */</span></p>
+<p class="p1"><span class="s1">           border-radius: 8px; /* Slightly rounded corners for the whole widget */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .pomodoro-container {</span></p>
+<p class="p1"><span class="s1">           background-color: #ffffff; /* White background for the timer itself */</span></p>
+<p class="p1"><span class="s1">           padding: 25px;</span></p>
+<p class="p1"><span class="s1">           border-radius: 12px;</span></p>
+<p class="p1"><span class="s1">           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */</span></p>
+<p class="p1"><span class="s1">           text-align: center;</span></p>
+<p class="p1"><span class="s1">           width: 90%;</span></p>
+<p class="p1"><span class="s1">           max-width: 420px; /* Max width to keep it compact */</span></p>
+<p class="p1"><span class="s1">           box-sizing: border-box; /* Include padding in width */</span></p>
+<p class="p1"><span class="s1">           position: relative; /* For message overlay positioning */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .mode-buttons {</span></p>
+<p class="p1"><span class="s1">           margin-bottom: 20px;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .mode-button {</span></p>
+<p class="p1"><span class="s1">           background-color: #e0e0e0;</span></p>
+<p class="p1"><span class="s1">           border: none;</span></p>
+<p class="p1"><span class="s1">           border-radius: 6px;</span></p>
+<p class="p1"><span class="s1">           padding: 8px 15px;</span></p>
+<p class="p1"><span class="s1">           margin: 0 5px;</span></p>
+<p class="p1"><span class="s1">           font-size: 14px;</span></p>
+<p class="p1"><span class="s1">           cursor: pointer;</span></p>
+<p class="p1"><span class="s1">           transition: background-color 0.2s ease, transform 0.1s ease;</span></p>
+<p class="p1"><span class="s1">           color: #555;</span></p>
+<p class="p1"><span class="s1">           outline: none; /* Remove outline on focus */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .mode-button:hover {</span></p>
+<p class="p1"><span class="s1">           background-color: #d0d0d0;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .mode-button.active {</span></p>
+<p class="p1"><span class="s1">           background-color: #4CAF50; /* Green for active mode */</span></p>
+<p class="p1"><span class="s1">           color: white;</span></p>
+<p class="p1"><span class="s1">           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .timer-display {</span></p>
+<p class="p1"><span class="s1">           font-size: 6em; /* Large timer text */</span></p>
+<p class="p1"><span class="s1">           font-weight: bold;</span></p>
+<p class="p1"><span class="s1">           margin-bottom: 25px;</span></p>
+<p class="p1"><span class="s1">           color: #333;</span></p>
+<p class="p1"><span class="s1">           letter-spacing: -2px; /* Tighter spacing for numbers */</span></p>
+<p class="p1"><span class="s1">           cursor: pointer; /* Indicate it's clickable */</span></p>
+<p class="p1"><span class="s1">           user-select: none; /* Prevent text selection on click */</span></p>
+<p class="p1"><span class="s1">           position: relative; /* For aligning edit controls */</span></p>
+<p class="p1"><span class="s1">           display: inline-block; /* To contain edit controls properly */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .edit-controls {</span></p>
+<p class="p1"><span class="s1">           display: flex;</span></p>
+<p class="p1"><span class="s1">           align-items: center;</span></p>
+<p class="p1"><span class="s1">           justify-content: center;</span></p>
+<p class="p1"><span class="s1">           position: absolute;</span></p>
+<p class="p1"><span class="s1">           top: 0;</span></p>
+<p class="p1"><span class="s1">           left: 0;</span></p>
+<p class="p1"><span class="s1">           width: 100%;</span></p>
+<p class="p1"><span class="s1">           height: 100%;</span></p>
+<p class="p1"><span class="s1">           background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white overlay */</span></p>
+<p class="p1"><span class="s1">           border-radius: 12px;</span></p>
+<p class="p1"><span class="s1">           padding: 0 20px;</span></p>
+<p class="p1"><span class="s1">           box-sizing: border-box;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .edit-controls input[type="number"] {</span></p>
+<p class="p1"><span class="s1">           width: 120px; /* Wider input for minutes */</span></p>
+<p class="p1"><span class="s1">           padding: 10px;</span></p>
+<p class="p1"><span class="s1">           border: 1px solid #ccc;</span></p>
+<p class="p1"><span class="s1">           border-radius: 6px;</span></p>
+<p class="p1"><span class="s1">           font-size: 1.2em;</span></p>
+<p class="p1"><span class="s1">           text-align: center;</span></p>
+<p class="p1"><span class="s1">           -moz-appearance: textfield;</span></p>
+<p class="p1"><span class="s1">           outline: none;</span></p>
+<p class="p1"><span class="s1">           box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p1"><span class="s1">       .edit-controls input[type="number"]::-webkit-outer-spin-button,</span></p>
+<p class="p1"><span class="s1">       .edit-controls input[type="number"]::-webkit-inner-spin-button {</span></p>
+<p class="p1"><span class="s1">           -webkit-appearance: none;</span></p>
+<p class="p1"><span class="s1">           margin: 0;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .confirm-edit-button {</span></p>
+<p class="p1"><span class="s1">           background-color: #4CAF50; /* Green for confirm */</span></p>
+<p class="p1"><span class="s1">           color: white;</span></p>
+<p class="p1"><span class="s1">           border: none;</span></p>
+<p class="p1"><span class="s1">           border-radius: 6px;</span></p>
+<p class="p1"><span class="s1">           padding: 10px 15px;</span></p>
+<p class="p1"><span class="s1">           margin-left: 10px;</span></p>
+<p class="p1"><span class="s1">           font-size: 1.2em;</span></p>
+<p class="p1"><span class="s1">           cursor: pointer;</span></p>
+<p class="p1"><span class="s1">           transition: background-color 0.2s ease, transform 0.1s ease;</span></p>
+<p class="p1"><span class="s1">           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);</span></p>
+<p class="p1"><span class="s1">           outline: none;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .confirm-edit-button:hover {</span></p>
+<p class="p1"><span class="s1">           background-color: #45a049;</span></p>
+<p class="p1"><span class="s1">           transform: translateY(-1px);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .confirm-edit-button:active {</span></p>
+<p class="p1"><span class="s1">           transform: translateY(0);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .control-buttons button {</span></p>
+<p class="p1"><span class="s1">           background-color: #007bff; /* Primary blue for actions */</span></p>
+<p class="p1"><span class="s1">           color: white;</span></p>
+<p class="p1"><span class="s1">           border: none;</span></p>
+<p class="p1"><span class="s1">           border-radius: 6px;</span></p>
+<p class="p1"><span class="s1">           padding: 12px 25px;</span></p>
+<p class="p1"><span class="s1">           margin: 0 8px;</span></p>
+<p class="p1"><span class="s1">           font-size: 16px;</span></p>
+<p class="p1"><span class="s1">           cursor: pointer;</span></p>
+<p class="p1"><span class="s1">           transition: background-color 0.2s ease, transform 0.1s ease;</span></p>
+<p class="p1"><span class="s1">           box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);</span></p>
+<p class="p1"><span class="s1">           outline: none;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .control-buttons button:hover {</span></p>
+<p class="p1"><span class="s1">           background-color: #0056b3;</span></p>
+<p class="p1"><span class="s1">           transform: translateY(-1px); /* Slight lift on hover */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .control-buttons button:active {</span></p>
+<p class="p1"><span class="s1">           transform: translateY(0); /* Press effect */</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .control-buttons button:disabled {</span></p>
+<p class="p1"><span class="s1">           background-color: #cccccc;</span></p>
+<p class="p1"><span class="s1">           cursor: not-allowed;</span></p>
+<p class="p1"><span class="s1">           opacity: 0.7;</span></p>
+<p class="p1"><span class="s1">           box-shadow: none;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       /* Message Box Styling */</span></p>
+<p class="p1"><span class="s1">       .message-overlay {</span></p>
+<p class="p1"><span class="s1">           position: fixed;</span></p>
+<p class="p1"><span class="s1">           top: 0;</span></p>
+<p class="p1"><span class="s1">           left: 0;</span></p>
+<p class="p1"><span class="s1">           width: 100%;</span></p>
+<p class="p1"><span class="s1">           height: 100%;</span></p>
+<p class="p1"><span class="s1">           background-color: rgba(0, 0, 0, 0.5);</span></p>
+<p class="p1"><span class="s1">           display: flex;</span></p>
+<p class="p1"><span class="s1">           justify-content: center;</span></p>
+<p class="p1"><span class="s1">           align-items: center;</span></p>
+<p class="p1"><span class="s1">           z-index: 1000;</span></p>
+<p class="p1"><span class="s1">           visibility: hidden; /* Hidden by default */</span></p>
+<p class="p1"><span class="s1">           opacity: 0;</span></p>
+<p class="p1"><span class="s1">           transition: visibility 0s, opacity 0.3s ease;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .message-overlay.visible {</span></p>
+<p class="p1"><span class="s1">           visibility: visible;</span></p>
+<p class="p1"><span class="s1">           opacity: 1;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .message-box {</span></p>
+<p class="p1"><span class="s1">           background-color: white;</span></p>
+<p class="p1"><span class="s1">           padding: 25px;</span></p>
+<p class="p1"><span class="s1">           border-radius: 8px;</span></p>
+<p class="p1"><span class="s1">           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);</span></p>
+<p class="p1"><span class="s1">           text-align: center;</span></p>
+<p class="p1"><span class="s1">           max-width: 300px;</span></p>
+<p class="p1"><span class="s1">           width: 80%;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .message-box p {</span></p>
+<p class="p1"><span class="s1">           margin-bottom: 20px;</span></p>
+<p class="p1"><span class="s1">           font-size: 1.1em;</span></p>
+<p class="p1"><span class="s1">           color: #333;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .message-box button {</span></p>
+<p class="p1"><span class="s1">           background-color: #007bff;</span></p>
+<p class="p1"><span class="s1">           color: white;</span></p>
+<p class="p1"><span class="s1">           border: none;</span></p>
+<p class="p1"><span class="s1">           border-radius: 5px;</span></p>
+<p class="p1"><span class="s1">           padding: 10px 20px;</span></p>
+<p class="p1"><span class="s1">           cursor: pointer;</span></p>
+<p class="p1"><span class="s1">           font-size: 1em;</span></p>
+<p class="p1"><span class="s1">           transition: background-color 0.2s ease;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       .message-box button:hover {</span></p>
+<p class="p1"><span class="s1">           background-color: #0056b3;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       /* Responsive adjustments */</span></p>
+<p class="p1"><span class="s1">       @media (max-width: 480px) {</span></p>
+<p class="p1"><span class="s1">           .pomodoro-container {</span></p>
+<p class="p1"><span class="s1">               padding: 15px;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           .timer-display {</span></p>
+<p class="p1"><span class="s1">               font-size: 4.5em; /* Smaller on very small screens */</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           .mode-button {</span></p>
+<p class="p1"><span class="s1">               font-size: 12px;</span></p>
+<p class="p1"><span class="s1">               padding: 6px 10px;</span></p>
+<p class="p1"><span class="s1">               margin: 0 3px;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           .control-buttons button {</span></p>
+<p class="p1"><span class="s1">               padding: 10px 18px;</span></p>
+<p class="p1"><span class="s1">               font-size: 14px;</span></p>
+<p class="p1"><span class="s1">               margin: 0 5px;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           .edit-controls input[type="number"] {</span></p>
+<p class="p1"><span class="s1">               width: 80px; /* Adjust input width for smaller screens */</span></p>
+<p class="p1"><span class="s1">               font-size: 1em;</span></p>
+<p class="p1"><span class="s1">               padding: 8px;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           .confirm-edit-button {</span></p>
+<p class="p1"><span class="s1">               font-size: 1em;</span></p>
+<p class="p1"><span class="s1">               padding: 8px 12px;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p1"><span class="s1">   &lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;div class="pomodoro-container"&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;div class="mode-buttons"&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button class="mode-button active" id="work-mode"&gt;Work&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button class="mode-button" id="short-break-mode"&gt;Short Break&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button class="mode-button" id="long-break-mode"&gt;Long Break&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       &lt;div class="timer-display" id="timer"&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;span id="time-text"&gt;25:00&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;div class="edit-controls" style="display: none;"&gt;</span></p>
+<p class="p1"><span class="s1">               &lt;input type="number" id="time-edit-input" value="25" min="1" max="120"&gt;</span></p>
+<p class="p1"><span class="s1">               &lt;button id="confirm-edit-button"&gt;✔&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       &lt;div class="control-buttons"&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button id="start-button"&gt;Start&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button id="pause-button" disabled&gt;Pause&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button id="reset-button"&gt;Reset&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">   &lt;!-- Message Box HTML --&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;div id="message-overlay" class="message-overlay"&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;div class="message-box"&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;p id="message-text"&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">           &lt;button id="message-close-button"&gt;OK&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1">       &lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">   &lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">   &lt;script&gt;</span></p>
+<p class="p1"><span class="s1">       const timerDisplay = document.getElementById('timer');</span></p>
+<p class="p1"><span class="s1">       const timeText = document.getElementById('time-text');</span></p>
+<p class="p1"><span class="s1">       const editControls = document.querySelector('.edit-controls');</span></p>
+<p class="p1"><span class="s1">       const timeEditInput = document.getElementById('time-edit-input');</span></p>
+<p class="p1"><span class="s1">       const confirmEditButton = document.getElementById('confirm-edit-button');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       const startButton = document.getElementById('start-button');</span></p>
+<p class="p1"><span class="s1">       const pauseButton = document.getElementById('pause-button');</span></p>
+<p class="p1"><span class="s1">       const resetButton = document.getElementById('reset-button');</span></p>
+<p class="p1"><span class="s1">       const workModeButton = document.getElementById('work-mode');</span></p>
+<p class="p1"><span class="s1">       const shortBreakModeButton = document.getElementById('short-break-mode');</span></p>
+<p class="p1"><span class="s1">       const longBreakModeButton = document.getElementById('long-break-mode');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Message Box Elements</span></p>
+<p class="p1"><span class="s1">       const messageOverlay = document.getElementById('message-overlay');</span></p>
+<p class="p1"><span class="s1">       const messageText = document.getElementById('message-text');</span></p>
+<p class="p1"><span class="s1">       const messageCloseButton = document.getElementById('message-close-button');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Initial durations in seconds</span></p>
+<p class="p1"><span class="s1">       let WORK_TIME = 25 * 60;</span></p>
+<p class="p1"><span class="s1">       let SHORT_BREAK_TIME = 5 * 60;</span></p>
+<p class="p1"><span class="s1">       let LONG_BREAK_TIME = 15 * 60;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       let currentMode = 'work';</span></p>
+<p class="p1"><span class="s1">       let timeLeft = WORK_TIME;</span></p>
+<p class="p1"><span class="s1">       let timerInterval;</span></p>
+<p class="p1"><span class="s1">       let isRunning = false;</span></p>
+<p class="p1"><span class="s1">       let workSessions = 0; // Tracks completed work sessions for long break</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Function to show a custom message box</span></p>
+<p class="p1"><span class="s1">       function showMessage(message) {</span></p>
+<p class="p1"><span class="s1">           messageText.textContent = message;</span></p>
+<p class="p1"><span class="s1">           messageOverlay.classList.add('visible');</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Function to hide the custom message box</span></p>
+<p class="p1"><span class="s1">       function hideMessage() {</span></p>
+<p class="p1"><span class="s1">           messageOverlay.classList.remove('visible');</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Formats seconds into MM:SS string</span></p>
+<p class="p1"><span class="s1">       function formatTime(seconds) {</span></p>
+<p class="p1"><span class="s1">           const minutes = Math.floor(seconds / 60);</span></p>
+<p class="p1"><span class="s1">           const remainingSeconds = seconds % 60;</span></p>
+<p class="p1"><span class="s1">           return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Updates the displayed time</span></p>
+<p class="p1"><span class="s1">       function updateTimerDisplay() {</span></p>
+<p class="p1"><span class="s1">           timeText.textContent = formatTime(timeLeft);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Sets the timer to a specific mode (work, shortBreak, longBreak)</span></p>
+<p class="p1"><span class="s1">       function setMode(mode) {</span></p>
+<p class="p1"><span class="s1">           currentMode = mode;</span></p>
+<p class="p1"><span class="s1">           clearInterval(timerInterval); // Stop any running timer</span></p>
+<p class="p1"><span class="s1">           isRunning = false; // Ensure timer is not running</span></p>
+<p class="p1"><span class="s1">           startButton.disabled = false;</span></p>
+<p class="p1"><span class="s1">           pauseButton.disabled = true;</span></p>
+<p class="p1"><span class="s1">           enableEditing(true); // Re-enable editing when mode is set/reset</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           // Update active mode button styling</span></p>
+<p class="p1"><span class="s1">           workModeButton.classList.remove('active');</span></p>
+<p class="p1"><span class="s1">           shortBreakModeButton.classList.remove('active');</span></p>
+<p class="p1"><span class="s1">           longBreakModeButton.classList.remove('active');</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           if (mode === 'work') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = WORK_TIME;</span></p>
+<p class="p1"><span class="s1">               workModeButton.classList.add('active');</span></p>
+<p class="p1"><span class="s1">           } else if (mode === 'shortBreak') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = SHORT_BREAK_TIME;</span></p>
+<p class="p1"><span class="s1">               shortBreakModeButton.classList.add('active');</span></p>
+<p class="p1"><span class="s1">           } else if (mode === 'longBreak') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = LONG_BREAK_TIME;</span></p>
+<p class="p1"><span class="s1">               longBreakModeButton.classList.add('active');</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           updateTimerDisplay(); // Update display to new mode's time</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Starts the timer countdown</span></p>
+<p class="p1"><span class="s1">       function startTimer() {</span></p>
+<p class="p1"><span class="s1">           if (isRunning) return; // Prevent multiple starts</span></p>
+<p class="p1"><span class="s1">           isRunning = true;</span></p>
+<p class="p1"><span class="s1">           startButton.disabled = true;</span></p>
+<p class="p1"><span class="s1">           pauseButton.disabled = false;</span></p>
+<p class="p1"><span class="s1">           disableModeButtons(true); // Disable mode buttons during countdown</span></p>
+<p class="p1"><span class="s1">           enableEditing(false); // Disable editing when timer runs</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           timerInterval = setInterval(() =&gt; {</span></p>
+<p class="p1"><span class="s1">               timeLeft--;</span></p>
+<p class="p1"><span class="s1">               updateTimerDisplay();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">               if (timeLeft &lt;= 0) {</span></p>
+<p class="p1"><span class="s1">                   clearInterval(timerInterval);</span></p>
+<p class="p1"><span class="s1">                   isRunning = false;</span></p>
+<p class="p1"><span class="s1">                   startButton.disabled = false;</span></p>
+<p class="p1"><span class="s1">                   pauseButton.disabled = true;</span></p>
+<p class="p1"><span class="s1">                   disableModeButtons(false); // Re-enable mode buttons after countdown</span></p>
+<p class="p1"><span class="s1">                   enableEditing(true); // Re-enable editing</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">                   showMessage(`${currentMode === 'work' ? 'Work' : 'Break'} session finished!`);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">                   if (currentMode === 'work') {</span></p>
+<p class="p1"><span class="s1">                       workSessions++;</span></p>
+<p class="p1"><span class="s1">                       if (workSessions % 4 === 0) { // After 4 work sessions, go to long break</span></p>
+<p class="p1"><span class="s1">                           setMode('longBreak');</span></p>
+<p class="p1"><span class="s1">                       } else {</span></p>
+<p class="p1"><span class="s1">                           setMode('shortBreak');</span></p>
+<p class="p1"><span class="s1">                       }</span></p>
+<p class="p1"><span class="s1">                   } else { // After a break, go back to work mode</span></p>
+<p class="p1"><span class="s1">                       setMode('work');</span></p>
+<p class="p1"><span class="s1">                   }</span></p>
+<p class="p1"><span class="s1">               }</span></p>
+<p class="p1"><span class="s1">           }, 1000); // Update every second</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Pauses the timer</span></p>
+<p class="p1"><span class="s1">       function pauseTimer() {</span></p>
+<p class="p1"><span class="s1">           clearInterval(timerInterval);</span></p>
+<p class="p1"><span class="s1">           isRunning = false;</span></p>
+<p class="p1"><span class="s1">           startButton.disabled = false;</span></p>
+<p class="p1"><span class="s1">           pauseButton.disabled = true;</span></p>
+<p class="p1"><span class="s1">           disableModeButtons(false); // Re-enable mode buttons on pause</span></p>
+<p class="p1"><span class="s1">           enableEditing(true); // Re-enable editing</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Resets the timer to its initial time for the current mode</span></p>
+<p class="p1"><span class="s1">       function resetTimer() {</span></p>
+<p class="p1"><span class="s1">           pauseTimer(); // Stop and reset running state</span></p>
+<p class="p1"><span class="s1">           // Restore current mode's time based on its last set value</span></p>
+<p class="p1"><span class="s1">           if (currentMode === 'work') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = WORK_TIME;</span></p>
+<p class="p1"><span class="s1">           } else if (currentMode === 'shortBreak') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = SHORT_BREAK_TIME;</span></p>
+<p class="p1"><span class="s1">           } else if (currentMode === 'longBreak') {</span></p>
+<p class="p1"><span class="s1">               timeLeft = LONG_BREAK_TIME;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">           updateTimerDisplay();</span></p>
+<p class="p1"><span class="s1">           workSessions = 0; // Reset work sessions count on full reset</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Shows the input field for editing the time</span></p>
+<p class="p1"><span class="s1">       function showEditInput() {</span></p>
+<p class="p1"><span class="s1">           if (isRunning) return; // Cannot edit while timer is running</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           // Populate input with current mode's minutes</span></p>
+<p class="p1"><span class="s1">           let currentMinutes;</span></p>
+<p class="p1"><span class="s1">           if (currentMode === 'work') currentMinutes = WORK_TIME / 60;</span></p>
+<p class="p1"><span class="s1">           else if (currentMode === 'shortBreak') currentMinutes = SHORT_BREAK_TIME / 60;</span></p>
+<p class="p1"><span class="s1">           else if (currentMode === 'longBreak') currentMinutes = LONG_BREAK_TIME / 60;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           timeEditInput.value = currentMinutes;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           timeText.style.display = 'none';</span></p>
+<p class="p1"><span class="s1">           editControls.style.display = 'flex'; // Use flex to center input and button</span></p>
+<p class="p1"><span class="s1">           timeEditInput.focus(); // Focus on the input field</span></p>
+<p class="p1"><span class="s1">           timeEditInput.select(); // Select the text in the input</span></p>
+<p class="p1"><span class="s1">           disableModeButtons(true); // Disable mode buttons during edit</span></p>
+<p class="p1"><span class="s1">           startButton.disabled = true; // Disable start button during edit</span></p>
+<p class="p1"><span class="s1">           resetButton.disabled = true; // Disable reset button during edit</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Hides the input field and applies the new time</span></p>
+<p class="p1"><span class="s1">       function hideEditInputAndApply() {</span></p>
+<p class="p1"><span class="s1">           let newMinutes = parseInt(timeEditInput.value);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           if (isNaN(newMinutes) || newMinutes &lt; 1) {</span></p>
+<p class="p1"><span class="s1">               showMessage("Please enter a valid number of minutes (at least 1).");</span></p>
+<p class="p1"><span class="s1">               // Reset input to previous valid value</span></p>
+<p class="p1"><span class="s1">               if (currentMode === 'work') newMinutes = WORK_TIME / 60;</span></p>
+<p class="p1"><span class="s1">               else if (currentMode === 'shortBreak') newMinutes = SHORT_BREAK_TIME / 60;</span></p>
+<p class="p1"><span class="s1">               else if (currentMode === 'longBreak') newMinutes = LONG_BREAK_TIME / 60;</span></p>
+<p class="p1"><span class="s1">               timeEditInput.value = newMinutes; // Restore previous value</span></p>
+<p class="p1"><span class="s1">           } else {</span></p>
+<p class="p1"><span class="s1">               // Update the correct time constant based on current mode</span></p>
+<p class="p1"><span class="s1">               if (currentMode === 'work') WORK_TIME = newMinutes * 60;</span></p>
+<p class="p1"><span class="s1">               else if (currentMode === 'shortBreak') SHORT_BREAK_TIME = newMinutes * 60;</span></p>
+<p class="p1"><span class="s1">               else if (currentMode === 'longBreak') LONG_BREAK_TIME = newMinutes * 60;</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           // Restore display and re-enable controls</span></p>
+<p class="p1"><span class="s1">           editControls.style.display = 'none';</span></p>
+<p class="p1"><span class="s1">           timeText.style.display = 'block';</span></p>
+<p class="p1"><span class="s1">           disableModeButtons(false); // Re-enable mode buttons</span></p>
+<p class="p1"><span class="s1">           startButton.disabled = false; // Re-enable start button</span></p>
+<p class="p1"><span class="s1">           resetButton.disabled = false; // Re-enable reset button</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">           // Apply the new time to the current mode (resets timer if needed)</span></p>
+<p class="p1"><span class="s1">           setMode(currentMode);</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Enables or disables the ability to click and edit the time</span></p>
+<p class="p1"><span class="s1">       function enableEditing(canEdit) {</span></p>
+<p class="p1"><span class="s1">           if (canEdit) {</span></p>
+<p class="p1"><span class="s1">               timerDisplay.style.cursor = 'pointer';</span></p>
+<p class="p1"><span class="s1">               timerDisplay.removeEventListener('click', showEditInput); // Remove to prevent double attach</span></p>
+<p class="p1"><span class="s1">               timerDisplay.addEventListener('click', showEditInput);</span></p>
+<p class="p1"><span class="s1">           } else {</span></p>
+<p class="p1"><span class="s1">               timerDisplay.style.cursor = 'default';</span></p>
+<p class="p1"><span class="s1">               timerDisplay.removeEventListener('click', showEditInput);</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Disables/enables mode selection buttons</span></p>
+<p class="p1"><span class="s1">       function disableModeButtons(disable) {</span></p>
+<p class="p1"><span class="s1">           workModeButton.disabled = disable;</span></p>
+<p class="p1"><span class="s1">           shortBreakModeButton.disabled = disable;</span></p>
+<p class="p1"><span class="s1">           longBreakModeButton.disabled = disable;</span></p>
+<p class="p1"><span class="s1">       }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Event Listeners</span></p>
+<p class="p1"><span class="s1">       startButton.addEventListener('click', startTimer);</span></p>
+<p class="p1"><span class="s1">       pauseButton.addEventListener('click', pauseTimer);</span></p>
+<p class="p1"><span class="s1">       resetButton.addEventListener('click', resetTimer);</span></p>
+<p class="p1"><span class="s1">       messageCloseButton.addEventListener('click', hideMessage);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       workModeButton.addEventListener('click', () =&gt; setMode('work'));</span></p>
+<p class="p1"><span class="s1">       shortBreakModeButton.addEventListener('click', () =&gt; setMode('shortBreak'));</span></p>
+<p class="p1"><span class="s1">       longBreakModeButton.addEventListener('click', () =&gt; setMode('longBreak'));</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Inline edit listeners</span></p>
+<p class="p1"><span class="s1">       confirmEditButton.addEventListener('click', hideEditInputAndApply);</span></p>
+<p class="p1"><span class="s1">       timeEditInput.addEventListener('keydown', (event) =&gt; {</span></p>
+<p class="p1"><span class="s1">           if (event.key === 'Enter') {</span></p>
+<p class="p1"><span class="s1">               hideEditInputAndApply();</span></p>
+<p class="p1"><span class="s1">           }</span></p>
+<p class="p1"><span class="s1">       });</span></p>
+<p class="p1"><span class="s1">       timeEditInput.addEventListener('blur', hideEditInputAndApply); // Apply on blur (click outside)</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">       // Initial setup</span></p>
+<p class="p1"><span class="s1">       setMode('work'); // Initialize to work mode and set display</span></p>
+<p class="p1"><span class="s1">       enableEditing(true); // Enable editing from the start</span></p>
+<p class="p1"><span class="s1">   &lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+</body>
+</html>
