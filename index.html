@@ -1,664 +1,628 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #4689cc; -webkit-text-stroke: #4689cc}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #8cd3fe; -webkit-text-stroke: #8cd3fe}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #c27e65; -webkit-text-stroke: #c27e65}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #6d7378; -webkit-text-stroke: #6d7378}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #cacaca; -webkit-text-stroke: #cacaca; min-height: 16.0px}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #36c0a0; -webkit-text-stroke: #36c0a0}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Menlo; color: #71c083; -webkit-text-stroke: #71c083}
-    span.s1 {font-kerning: none; background-color: #171818}
-    span.s2 {font-kerning: none; color: #8cd3fe; background-color: #171818; -webkit-text-stroke: 0px #8cd3fe}
-    span.s3 {font-kerning: none; color: #6d6d6d; background-color: #171818; -webkit-text-stroke: 0px #6d6d6d}
-    span.s4 {font-kerning: none; color: #cacaca; background-color: #171818; -webkit-text-stroke: 0px #cacaca}
-    span.s5 {font-kerning: none; color: #c27e65; background-color: #171818; -webkit-text-stroke: 0px #c27e65}
-    span.s6 {font-kerning: none; color: #4689cc; background-color: #171818; -webkit-text-stroke: 0px #4689cc}
-    span.s7 {font-kerning: none; color: #d4d4d4; background-color: #171818; -webkit-text-stroke: 0px #d4d4d4}
-    span.s8 {font-kerning: none; color: #71c083; background-color: #171818; -webkit-text-stroke: 0px #71c083}
-    span.s9 {font-kerning: none; color: #a7c598; background-color: #171818; -webkit-text-stroke: 0px #a7c598}
-    span.s10 {font-kerning: none}
-    span.s11 {font-kerning: none; color: #b76ff7; background-color: #171818; -webkit-text-stroke: 0px #b76ff7}
-    span.s12 {font-kerning: none; color: #36c0a0; background-color: #171818; -webkit-text-stroke: 0px #36c0a0}
-    span.s13 {font-kerning: none; color: #f67c30; background-color: #171818; -webkit-text-stroke: 0px #f67c30}
-    span.s14 {font-kerning: none; color: #6d7378; background-color: #171818; -webkit-text-stroke: 0px #6d7378}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizable Pomodoro Timer</title>
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f6f8fa; /* Light background to blend with Notion */
+            color: #333;
+            overflow: hidden; /* Prevent scrollbars if embedded */
+            border-radius: 8px; /* Slightly rounded corners for the whole widget */
+        }
+
+        .pomodoro-container {
+            background-color: #ffffff; /* White background for the timer itself */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            text-align: center;
+            width: 90%;
+            max-width: 420px; /* Max width to keep it compact */
+            box-sizing: border-box; /* Include padding in width */
+            position: relative; /* For message overlay positioning */
+        }
+
+        .mode-buttons {
+            margin-bottom: 20px;
+        }
+
+        .mode-button {
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            margin: 0 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            color: #555;
+            outline: none; /* Remove outline on focus */
+        }
+
+        .mode-button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .mode-button.active {
+            background-color: #4CAF50; /* Green for active mode */
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .timer-display {
+            font-size: 6em; /* Large timer text */
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #333;
+            letter-spacing: -2px; /* Tighter spacing for numbers */
+            cursor: pointer; /* Indicate it's clickable */
+            user-select: none; /* Prevent text selection on click */
+            position: relative; /* For aligning edit controls */
+            display: inline-block; /* To contain edit controls properly */
+        }
+
+        .edit-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white overlay */
+            border-radius: 12px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .edit-controls input[type="number"] {
+            width: 120px; /* Wider input for minutes */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1.2em;
+            text-align: center;
+            -moz-appearance: textfield;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .edit-controls input[type="number"]::-webkit-outer-spin-button,
+        .edit-controls input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .confirm-edit-button {
+            background-color: #4CAF50; /* Green for confirm */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-left: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .confirm-edit-button:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .confirm-edit-button:active {
+            transform: translateY(0);
+        }
+
+        .control-buttons button {
+            background-color: #007bff; /* Primary blue for actions */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            margin: 0 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        .control-buttons button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px); /* Slight lift on hover */
+        }
+
+        .control-buttons button:active {
+            transform: translateY(0); /* Press effect */
+        }
+
+        .control-buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+        }
+
+        /* Message Box Styling */
+        .message-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden; /* Hidden by default */
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .message-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .message-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            width: 80%;
+        }
+
+        .message-box p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .message-box button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+        }
+
+        .message-box button:hover {
+            background-color: #0056b3;
+        }
+
+        /* LLM Output Area */
+        .llm-output {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.95em;
+            color: #666;
+            min-height: 50px; /* Give it some space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            opacity: 0; /* Hidden by default */
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+        }
+
+        .llm-output.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
+        .llm-output .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .pomodoro-container {
+                padding: 15px;
+            }
+            .timer-display {
+                font-size: 4.5em; /* Smaller on very small screens */
+            }
+            .mode-button {
+                font-size: 12px;
+                padding: 6px 10px;
+                margin: 0 3px;
+            }
+            .control-buttons button {
+                padding: 10px 18px;
+                font-size: 14px;
+                margin: 0 5px;
+            }
+            .edit-controls input[type="number"] {
+                width: 80px; /* Adjust input width for smaller screens */
+                font-size: 1em;
+                padding: 8px;
+            }
+            .confirm-edit-button {
+                font-size: 1em;
+                padding: 8px 12px;
+            }
+            .llm-output {
+                font-size: 0.85em;
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE</span><span class="s2"> html</span><span class="s1">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;</span><span class="s1">html</span><span class="s4"> </span><span class="s2">lang</span><span class="s3">=</span><span class="s5">"en"</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;</span><span class="s1">head</span><span class="s3">&gt;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">meta</span><span class="s4"> </span><span class="s1">charset</span><span class="s3">=</span><span class="s5">"UTF-8"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">meta</span><span class="s4"> </span><span class="s2">name</span><span class="s3">=</span><span class="s1">"viewport"</span><span class="s4"> </span><span class="s2">content</span><span class="s3">=</span><span class="s1">"width=device-width, initial-scale=1.0"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">title</span><span class="s3">&gt;</span><span class="s1">Customizable Pomodoro Timer</span><span class="s3">&lt;/</span><span class="s6">title</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s1">style</span><span class="s3">&gt;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">/* Basic Reset &amp; Body Styling */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s6">body</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">font-family:</span><span class="s4"> </span><span class="s1">-apple-system</span><span class="s7">,</span><span class="s4"> </span><span class="s1">BlinkMacSystemFont</span><span class="s7">,</span><span class="s4"> </span><span class="s8">"Segoe UI"</span><span class="s7">,</span><span class="s4"> </span><span class="s1">Roboto</span><span class="s7">,</span><span class="s4"> </span><span class="s1">Helvetica</span><span class="s7">,</span><span class="s4"> </span><span class="s1">Arial</span><span class="s7">,</span><span class="s4"> </span><span class="s1">sans-serif</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s5">flex</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">justify-content:</span><span class="s4"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">align-items:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">min-height:</span><span class="s1"> </span><span class="s9">100vh</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> #f6f8fa</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Light background to blend with Notion */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> #333</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">overflow:</span><span class="s4"> </span><span class="s5">hidden</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Prevent scrollbars if embedded */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">border-radius:</span><span class="s4"> </span><span class="s9">8px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Slightly rounded corners for the whole widget */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.pomodoro-container</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> #ffffff</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* White background for the timer itself */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">25px</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">12px</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s4"> </span><span class="s9">0</span><span class="s4"> </span><span class="s9">4px</span><span class="s4"> </span><span class="s9">15px</span><span class="s4"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0.1</span><span class="s5">)</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Subtle shadow for depth */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">text-align:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">90%</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">max-width:</span><span class="s4"> </span><span class="s9">420px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Max width to keep it compact */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">box-sizing:</span><span class="s4"> </span><span class="s5">border-box</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Include padding in width */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">position:</span><span class="s4"> </span><span class="s5">relative</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* For message overlay positioning */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.mode-buttons</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">margin-bottom:</span><span class="s4"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.mode-button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #e0e0e0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">6px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">8px</span><span class="s1"> </span><span class="s9">15px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">5px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">14px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s5">pointer</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">background-color</span><span class="s4"> </span><span class="s9">0.2s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">,</span><span class="s4"> </span><span class="s1">transform</span><span class="s4"> </span><span class="s9">0.1s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> #555</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">outline:</span><span class="s4"> </span><span class="s5">none</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Remove outline on focus */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.mode-button:hover</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #d0d0d0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.mode-button.active</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> #4CAF50</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Green for active mode */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> </span><span class="s5">white</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">2px</span><span class="s1"> </span><span class="s9">5px</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.2</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.timer-display</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s4"> </span><span class="s9">6em</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Large timer text */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-weight:</span><span class="s1"> </span><span class="s5">bold</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">margin-bottom:</span><span class="s4"> </span><span class="s9">25px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> #333</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">letter-spacing:</span><span class="s4"> </span><span class="s9">-2px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Tighter spacing for numbers */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s4"> </span><span class="s5">pointer</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Indicate it's clickable */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">user-select:</span><span class="s4"> </span><span class="s5">none</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Prevent text selection on click */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">position:</span><span class="s4"> </span><span class="s5">relative</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* For aligning edit controls */</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s4"> </span><span class="s5">inline-block</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* To contain edit controls properly */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.edit-controls</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s5">flex</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">align-items:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">justify-content:</span><span class="s4"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">position:</span><span class="s1"> </span><span class="s5">absolute</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">top:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">left:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">100%</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">height:</span><span class="s1"> </span><span class="s9">100%</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> </span><span class="s5">rgba(</span><span class="s9">255</span><span class="s7">,</span><span class="s4"> </span><span class="s9">255</span><span class="s7">,</span><span class="s4"> </span><span class="s9">255</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0.95</span><span class="s5">)</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Slightly transparent white overlay */</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">12px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-sizing:</span><span class="s1"> </span><span class="s5">border-box</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.edit-controls</span><span class="s4"> </span><span class="s1">input</span><span class="s7">[</span><span class="s5">type</span><span class="s7">=</span><span class="s8">"number"</span><span class="s7">]</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s4"> </span><span class="s9">120px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Wider input for minutes */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">10px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s9">1px</span><span class="s1"> </span><span class="s5">solid</span><span class="s1"> #ccc</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">6px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1.2em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">text-align:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">-moz-appearance:</span><span class="s4"> </span><span class="s5">textfield</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">outline:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s5">inset</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">1px</span><span class="s1"> </span><span class="s9">3px</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.1</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.edit-controls</span><span class="s4"> </span><span class="s1">input</span><span class="s7">[</span><span class="s5">type</span><span class="s7">=</span><span class="s8">"number"</span><span class="s7">]</span><span class="s1">::-webkit-outer-spin-button</span><span class="s7">,</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.edit-controls</span><span class="s4"> </span><span class="s1">input</span><span class="s7">[</span><span class="s5">type</span><span class="s7">=</span><span class="s8">"number"</span><span class="s7">]</span><span class="s1">::-webkit-inner-spin-button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">-webkit-appearance:</span><span class="s4"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.confirm-edit-button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> #4CAF50</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Green for confirm */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> </span><span class="s5">white</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">6px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">10px</span><span class="s1"> </span><span class="s9">15px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin-left:</span><span class="s1"> </span><span class="s9">10px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1.2em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s5">pointer</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">background-color</span><span class="s4"> </span><span class="s9">0.2s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">,</span><span class="s4"> </span><span class="s1">transform</span><span class="s4"> </span><span class="s9">0.1s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">2px</span><span class="s1"> </span><span class="s9">5px</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.1</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">outline:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.confirm-edit-button:hover</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #45a049</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">transform:</span><span class="s1"> </span><span class="s5">translateY(</span><span class="s9">-1px</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.confirm-edit-button:active</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">transform:</span><span class="s1"> </span><span class="s5">translateY(</span><span class="s9">0</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.control-buttons</span><span class="s4"> </span><span class="s1">button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s4"> #007bff</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Primary blue for actions */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> </span><span class="s5">white</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">6px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">12px</span><span class="s1"> </span><span class="s9">25px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">8px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">16px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s5">pointer</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">background-color</span><span class="s4"> </span><span class="s9">0.2s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">,</span><span class="s4"> </span><span class="s1">transform</span><span class="s4"> </span><span class="s9">0.1s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">2px</span><span class="s1"> </span><span class="s9">5px</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.1</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">outline:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.control-buttons</span><span class="s4"> </span><span class="s1">button:hover</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #0056b3</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transform:</span><span class="s4"> </span><span class="s5">translateY(</span><span class="s9">-1px</span><span class="s5">)</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Slight lift on hover */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.control-buttons</span><span class="s4"> </span><span class="s1">button:active</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transform:</span><span class="s4"> </span><span class="s5">translateY(</span><span class="s9">0</span><span class="s5">)</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Press effect */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.control-buttons</span><span class="s4"> </span><span class="s1">button:disabled</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #cccccc</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s5">not-allowed</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">0.7</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">/* Message Box Styling */</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-overlay</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">position:</span><span class="s1"> </span><span class="s5">fixed</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">top:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">left:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">100%</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">height:</span><span class="s1"> </span><span class="s9">100%</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">background-color:</span><span class="s4"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0</span><span class="s7">,</span><span class="s4"> </span><span class="s9">0.5</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s5">flex</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">justify-content:</span><span class="s4"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">align-items:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">z-index:</span><span class="s1"> </span><span class="s9">1000</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">visibility:</span><span class="s4"> </span><span class="s5">hidden</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Hidden by default */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">0</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">visibility</span><span class="s4"> </span><span class="s9">0s</span><span class="s7">,</span><span class="s4"> </span><span class="s1">opacity</span><span class="s4"> </span><span class="s9">0.3s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-overlay.visible</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">visibility:</span><span class="s1"> </span><span class="s5">visible</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">1</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-box</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">background-color:</span><span class="s4"> </span><span class="s5">white</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">25px</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">8px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">box-shadow:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">5px</span><span class="s1"> </span><span class="s9">15px</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.3</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">text-align:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">max-width:</span><span class="s1"> </span><span class="s9">300px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">80%</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-box</span><span class="s4"> </span><span class="s1">p</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">margin-bottom:</span><span class="s4"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1.1em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> #333</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-box</span><span class="s4"> </span><span class="s1">button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #007bff</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> </span><span class="s5">white</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s5">none</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">5px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">10px</span><span class="s1"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">cursor:</span><span class="s1"> </span><span class="s5">pointer</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1em</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">background-color</span><span class="s4"> </span><span class="s9">0.2s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.message-box</span><span class="s4"> </span><span class="s1">button:hover</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #0056b3</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">/* LLM Output Area */</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.llm-output</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin-top:</span><span class="s1"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">15px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border-top:</span><span class="s1"> </span><span class="s9">1px</span><span class="s1"> </span><span class="s5">solid</span><span class="s1"> #eee</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">text-align:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">0.95em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">color:</span><span class="s1"> #666</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">min-height:</span><span class="s4"> </span><span class="s9">50px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Give it some space */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">display:</span><span class="s1"> </span><span class="s5">flex</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">align-items:</span><span class="s1"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">justify-content:</span><span class="s4"> </span><span class="s5">center</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">background-color:</span><span class="s1"> #f0f0f0</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">8px</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">opacity:</span><span class="s4"> </span><span class="s9">0</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Hidden by default */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">visibility:</span><span class="s1"> </span><span class="s5">hidden</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s4"> </span><span class="s1">opacity</span><span class="s4"> </span><span class="s9">0.3s</span><span class="s4"> </span><span class="s1">ease</span><span class="s7">,</span><span class="s4"> </span><span class="s1">visibility</span><span class="s4"> </span><span class="s9">0s</span><span class="s4"> </span><span class="s9">0.3s</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.llm-output.visible</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">opacity:</span><span class="s1"> </span><span class="s9">1</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">visibility:</span><span class="s1"> </span><span class="s5">visible</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">transition:</span><span class="s1"> </span><span class="s5">opacity</span><span class="s1"> </span><span class="s9">0.3s</span><span class="s1"> </span><span class="s5">ease</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">.llm-output</span><span class="s4"> </span><span class="s1">.loading-spinner</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border:</span><span class="s1"> </span><span class="s9">4px</span><span class="s1"> </span><span class="s5">solid</span><span class="s1"> </span><span class="s5">rgba(</span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0</span><span class="s7">,</span><span class="s1"> </span><span class="s9">0.1</span><span class="s5">)</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">border-top:</span><span class="s1"> </span><span class="s9">4px</span><span class="s1"> </span><span class="s5">solid</span><span class="s1"> #007bff</span><span class="s7">;</span></p>
-<p class="p2"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">border-radius:</span><span class="s4"> </span><span class="s9">50%</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">width:</span><span class="s1"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">height:</span><span class="s1"> </span><span class="s9">20px</span><span class="s7">;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s2">animation:</span><span class="s4"> </span><span class="s1">spin</span><span class="s4"> </span><span class="s9">1s</span><span class="s4"> </span><span class="s1">linear</span><span class="s4"> </span><span class="s1">infinite</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s5">auto</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">@keyframes</span><span class="s1"> </span><span class="s5">spin</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s9">0%</span><span class="s1"> </span><span class="s7">{</span><span class="s1"> </span><span class="s2">transform:</span><span class="s1"> </span><span class="s5">rotate(</span><span class="s9">0deg</span><span class="s5">)</span><span class="s7">;</span><span class="s1"> </span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s9">100%</span><span class="s1"> </span><span class="s7">{</span><span class="s1"> </span><span class="s2">transform:</span><span class="s1"> </span><span class="s5">rotate(</span><span class="s9">360deg</span><span class="s5">)</span><span class="s7">;</span><span class="s1"> </span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">/* Responsive adjustments */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>@</span><span class="s6">media</span><span class="s1"> (</span><span class="s6">max-width:</span><span class="s1"> 480</span><span class="s6">px</span><span class="s1">) </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>.pomodoro-container {</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">15px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">.timer-display</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s4"> </span><span class="s9">4.5em</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Smaller on very small screens */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s6">.mode-button</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">12px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">6px</span><span class="s1"> </span><span class="s9">10px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">3px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">.control-buttons</span><span class="s4"> </span><span class="s1">button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">10px</span><span class="s1"> </span><span class="s9">18px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">14px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">margin:</span><span class="s1"> </span><span class="s9">0</span><span class="s1"> </span><span class="s9">5px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">.edit-controls</span><span class="s4"> </span><span class="s1">input</span><span class="s7">[</span><span class="s5">type</span><span class="s7">=</span><span class="s8">"number"</span><span class="s7">]</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s2">width:</span><span class="s4"> </span><span class="s9">80px</span><span class="s7">;</span><span class="s4"> </span><span class="s1">/* Adjust input width for smaller screens */</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">8px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">.confirm-edit-button</span><span class="s4"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">1em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">8px</span><span class="s1"> </span><span class="s9">12px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s6">.llm-output</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">font-size:</span><span class="s1"> </span><span class="s9">0.85em</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s2">padding:</span><span class="s1"> </span><span class="s9">10px</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s1">style</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;/</span><span class="s1">head</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;</span><span class="s1">body</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"pomodoro-container"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"mode-buttons"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"mode-button active"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"work-mode"</span><span class="s3">&gt;</span><span class="s4">Work</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"mode-button"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"short-break-mode"</span><span class="s3">&gt;</span><span class="s4">Short Break</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"mode-button"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"long-break-mode"</span><span class="s3">&gt;</span><span class="s4">Long Break</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"timer-display"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"timer"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">span</span><span class="s1"> </span><span class="s2">id</span><span class="s3">=</span><span class="s5">"time-text"</span><span class="s3">&gt;</span><span class="s1">25:00</span><span class="s3">&lt;/</span><span class="s6">span</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"edit-controls"</span><span class="s4"> </span><span class="s2">style</span><span class="s3">=</span><span class="s1">"display: none;"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">input</span><span class="s4"> </span><span class="s2">type</span><span class="s3">=</span><span class="s1">"number"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"time-edit-input"</span><span class="s4"> </span><span class="s2">value</span><span class="s3">=</span><span class="s1">"25"</span><span class="s4"> </span><span class="s2">min</span><span class="s3">=</span><span class="s1">"1"</span><span class="s4"> </span><span class="s2">max</span><span class="s3">=</span><span class="s1">"120"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"confirm-edit-button"</span><span class="s3">&gt;</span><span class="s4">✔</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"control-buttons"</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s1"> </span><span class="s2">id</span><span class="s3">=</span><span class="s5">"start-button"</span><span class="s3">&gt;</span><span class="s1">Start</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s1"> </span><span class="s2">id</span><span class="s3">=</span><span class="s5">"pause-button"</span><span class="s1"> </span><span class="s2">disabled</span><span class="s3">&gt;</span><span class="s1">Pause</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s1"> </span><span class="s2">id</span><span class="s3">=</span><span class="s5">"reset-button"</span><span class="s3">&gt;</span><span class="s1">Reset</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">&lt;!-- LLM Output Area --&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"llm-output"</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"llm-output"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">span</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"llm-message-text"</span><span class="s3">&gt;&lt;/</span><span class="s6">span</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"loading-spinner"</span><span class="s4"> </span><span class="s2">style</span><span class="s3">=</span><span class="s1">"display: none;"</span><span class="s3">&gt;&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s1">&lt;!-- Message Box HTML --&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"message-overlay"</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"message-overlay"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;</span><span class="s6">div</span><span class="s4"> </span><span class="s2">class</span><span class="s3">=</span><span class="s1">"message-box"</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">p</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"message-text"</span><span class="s3">&gt;&lt;/</span><span class="s6">p</span><span class="s3">&gt;</span></p>
-<p class="p3"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s3">&lt;</span><span class="s6">button</span><span class="s4"> </span><span class="s2">id</span><span class="s3">=</span><span class="s1">"message-close-button"</span><span class="s3">&gt;</span><span class="s4">OK</span><span class="s3">&lt;/</span><span class="s6">button</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s6">div</span><span class="s3">&gt;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;</span><span class="s1">script</span><span class="s3">&gt;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> timerDisplay </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'timer'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> timeText </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'time-text'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> editControls </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">querySelector</span><span class="s7">(</span><span class="s8">'.edit-controls'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> timeEditInput </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'time-edit-input'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> confirmEditButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'confirm-edit-button'</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> startButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'start-button'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> pauseButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'pause-button'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> resetButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'reset-button'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> workModeButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'work-mode'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> shortBreakModeButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'short-break-mode'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> longBreakModeButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'long-break-mode'</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Message Box Elements</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> messageOverlay </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'message-overlay'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> messageText </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'message-text'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> messageCloseButton </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'message-close-button'</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// LLM Output Elements</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> llmOutputDiv </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'llm-output'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> llmMessageText </span><span class="s7">=</span><span class="s1"> document</span><span class="s7">.</span><span class="s1">getElementById</span><span class="s7">(</span><span class="s8">'llm-message-text'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">const</span><span class="s1"> llmLoadingSpinner </span><span class="s7">=</span><span class="s1"> llmOutputDiv</span><span class="s7">.</span><span class="s1">querySelector</span><span class="s7">(</span><span class="s8">'.loading-spinner'</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Initial durations in seconds</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s1"> </span><span class="s7">=</span><span class="s1"> </span><span class="s13">25</span><span class="s1"> </span><span class="s7">*</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p7"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s4"> </span><span class="s1">SHORT_BREAK_TIME</span><span class="s4"> </span><span class="s7">=</span><span class="s4"> </span><span class="s13">5</span><span class="s4"> </span><span class="s7">*</span><span class="s4"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p7"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s4"> </span><span class="s1">LONG_BREAK_TIME</span><span class="s4"> </span><span class="s7">=</span><span class="s4"> </span><span class="s13">15</span><span class="s4"> </span><span class="s7">*</span><span class="s4"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s1"> currentMode </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s1"> timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s1"> timerInterval</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s1"> isRunning </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s11">let</span><span class="s4"> workSessions </span><span class="s7">=</span><span class="s4"> </span><span class="s13">0</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Tracks completed work sessions for long break</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Function to show a custom message box</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> showMessage</span><span class="s7">(</span><span class="s1">message</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>messageText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> message</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>messageOverlay</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">add</span><span class="s7">(</span><span class="s8">'visible'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Function to hide the custom message box</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> hideMessage</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>messageOverlay</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">remove</span><span class="s7">(</span><span class="s8">'visible'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Formats seconds into MM:SS string</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> formatTime</span><span class="s7">(</span><span class="s1">seconds</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">const</span><span class="s1"> minutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">Math</span><span class="s7">.</span><span class="s1">floor</span><span class="s7">(</span><span class="s1">seconds </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">const</span><span class="s1"> remainingSeconds </span><span class="s7">=</span><span class="s1"> seconds </span><span class="s7">%</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">return</span><span class="s1"> </span><span class="s8">`</span><span class="s7">${</span><span class="s12">String</span><span class="s7">(</span><span class="s1">minutes</span><span class="s7">).</span><span class="s1">padStart</span><span class="s7">(</span><span class="s13">2</span><span class="s7">,</span><span class="s1"> </span><span class="s8">'0'</span><span class="s7">)}</span><span class="s8">:</span><span class="s7">${</span><span class="s12">String</span><span class="s7">(</span><span class="s1">remainingSeconds</span><span class="s7">).</span><span class="s1">padStart</span><span class="s7">(</span><span class="s13">2</span><span class="s7">,</span><span class="s1"> </span><span class="s8">'0'</span><span class="s7">)}</span><span class="s8">`</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Updates the displayed time</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> updateTimerDisplay</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> formatTime</span><span class="s7">(</span><span class="s1">timeLeft</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Sets the timer to a specific mode (work, shortBreak, longBreak)</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> setMode</span><span class="s7">(</span><span class="s1">mode</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>currentMode </span><span class="s7">=</span><span class="s1"> mode</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>clearInterval</span><span class="s7">(</span><span class="s1">timerInterval</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Stop any running timer</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>isRunning </span><span class="s7">=</span><span class="s4"> </span><span class="s11">false</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Ensure timer is not running</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>startButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>pauseButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">true</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>enableEditing</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Re-enable editing when mode is set/reset</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>hideLlmMessage</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Hide LLM message when mode changes</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Update active mode button styling</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>workModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">remove</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>shortBreakModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">remove</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>longBreakModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">remove</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">mode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>workModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">add</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">mode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">SHORT_BREAK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>shortBreakModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">add</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">mode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">LONG_BREAK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>longBreakModeButton</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">add</span><span class="s7">(</span><span class="s8">'active'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>updateTimerDisplay</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Update display to new mode's time</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Starts the timer countdown</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> startTimer</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s4"> </span><span class="s7">(</span><span class="s4">isRunning</span><span class="s7">)</span><span class="s4"> </span><span class="s11">return</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Prevent multiple starts</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>isRunning </span><span class="s7">=</span><span class="s1"> </span><span class="s11">true</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>startButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">true</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>pauseButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>disableModeButtons</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Disable mode buttons during countdown</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>enableEditing</span><span class="s7">(</span><span class="s11">false</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Disable editing when timer runs</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>hideLlmMessage</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Hide LLM message when starting a new session</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timerInterval </span><span class="s7">=</span><span class="s1"> setInterval</span><span class="s7">(()</span><span class="s1"> </span><span class="s7">=&gt;</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft</span><span class="s7">--;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>updateTimerDisplay</span><span class="s7">();</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">timeLeft </span><span class="s7">&lt;=</span><span class="s1"> </span><span class="s13">0</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>clearInterval</span><span class="s7">(</span><span class="s1">timerInterval</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>isRunning </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>startButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>pauseButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">true</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                    </span>disableModeButtons</span><span class="s7">(</span><span class="s11">false</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Re-enable mode buttons after countdown</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>enableEditing</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Re-enable editing</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>showMessage</span><span class="s7">(</span><span class="s8">`</span><span class="s7">${</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s1"> </span><span class="s7">?</span><span class="s1"> </span><span class="s8">'Work'</span><span class="s1"> </span><span class="s7">:</span><span class="s1"> </span><span class="s8">'Break'</span><span class="s7">}</span><span class="s8"> session finished!`</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>generateLlmMessage</span><span class="s7">(</span><span class="s1">currentMode</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Generate and show LLM message</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                        </span>workSessions</span><span class="s7">++;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">workSessions </span><span class="s7">%</span><span class="s1"> </span><span class="s13">4</span><span class="s1"> </span><span class="s7">===</span><span class="s1"> </span><span class="s13">0</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span><span class="s1"> </span><span class="s14">// After 4 work sessions, go to long break</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                            </span>setMode</span><span class="s7">(</span><span class="s8">'longBreak'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                            </span>setMode</span><span class="s7">(</span><span class="s8">'shortBreak'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                        </span></span><span class="s7">}</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                    </span></span><span class="s7">}</span><span class="s4"> </span><span class="s11">else</span><span class="s4"> </span><span class="s7">{</span><span class="s4"> </span><span class="s1">// After a break, go back to work mode</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                        </span>setMode</span><span class="s7">(</span><span class="s8">'work'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s7">}</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s7">},</span><span class="s4"> </span><span class="s13">1000</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Update every second</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Pauses the timer</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> pauseTimer</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>clearInterval</span><span class="s7">(</span><span class="s1">timerInterval</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>isRunning </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>startButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>pauseButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">true</span><span class="s7">;</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>disableModeButtons</span><span class="s7">(</span><span class="s11">false</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Re-enable mode buttons on pause</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>enableEditing</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Re-enable editing</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Resets the timer to its initial time for the current mode</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> resetTimer</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>pauseTimer</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Stop and reset running state</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Restore current mode's time based on its last set value</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">SHORT_BREAK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeLeft </span><span class="s7">=</span><span class="s1"> </span><span class="s12">LONG_BREAK_TIME</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>updateTimerDisplay</span><span class="s7">();</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>workSessions </span><span class="s7">=</span><span class="s4"> </span><span class="s13">0</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Reset work sessions count on full reset</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>hideLlmMessage</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Hide LLM message on reset</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Shows the input field for editing the time</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> showEditInput</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s4"> </span><span class="s7">(</span><span class="s4">isRunning</span><span class="s7">)</span><span class="s4"> </span><span class="s11">return</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Cannot edit while timer is running</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Populate input with current mode's minutes</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">let</span><span class="s1"> currentMinutes</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> currentMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> currentMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">SHORT_BREAK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> currentMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">LONG_BREAK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeEditInput</span><span class="s7">.</span><span class="s1">value </span><span class="s7">=</span><span class="s1"> currentMinutes</span><span class="s7">;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeText</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'none'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>editControls</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'flex'</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Use flex to center input and button</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeEditInput</span><span class="s7">.</span><span class="s1">focus</span><span class="s7">();</span><span class="s1"> </span><span class="s14">// Focus on the input field</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeEditInput</span><span class="s7">.</span><span class="s1">select</span><span class="s7">();</span><span class="s1"> </span><span class="s14">// Select the text in the input</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>disableModeButtons</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Disable mode buttons during edit</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>startButton</span><span class="s7">.</span><span class="s4">disabled </span><span class="s7">=</span><span class="s4"> </span><span class="s11">true</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Disable start button during edit</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>resetButton</span><span class="s7">.</span><span class="s4">disabled </span><span class="s7">=</span><span class="s4"> </span><span class="s11">true</span><span class="s7">;</span><span class="s4"> </span><span class="s1">// Disable reset button during edit</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span>hideLlmMessage</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Hide LLM message during edit</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Hides the input field and applies the new time</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> hideEditInputAndApply</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">let</span><span class="s1"> newMinutes </span><span class="s7">=</span><span class="s1"> parseInt</span><span class="s7">(</span><span class="s1">timeEditInput</span><span class="s7">.</span><span class="s1">value</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">isNaN</span><span class="s7">(</span><span class="s1">newMinutes</span><span class="s7">)</span><span class="s1"> </span><span class="s7">||</span><span class="s1"> newMinutes </span><span class="s7">&lt;</span><span class="s1"> </span><span class="s13">1</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>showMessage</span><span class="s7">(</span><span class="s1">"Please enter a valid number of minutes (at least 1)."</span><span class="s7">);</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s1">// Reset input to previous valid value</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> newMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> newMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">SHORT_BREAK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> newMinutes </span><span class="s7">=</span><span class="s1"> </span><span class="s12">LONG_BREAK_TIME</span><span class="s1"> </span><span class="s7">/</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timeEditInput</span><span class="s7">.</span><span class="s1">value </span><span class="s7">=</span><span class="s1"> newMinutes</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Restore previous value</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s1">// Update the correct time constant based on current mode</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> </span><span class="s12">WORK_TIME</span><span class="s1"> </span><span class="s7">=</span><span class="s1"> newMinutes </span><span class="s7">*</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s12">SHORT_BREAK_TIME</span><span class="s1"> </span><span class="s7">=</span><span class="s1"> newMinutes </span><span class="s7">*</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">currentMode </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s12">LONG_BREAK_TIME</span><span class="s1"> </span><span class="s7">=</span><span class="s1"> newMinutes </span><span class="s7">*</span><span class="s1"> </span><span class="s13">60</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Restore display and re-enable controls</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>editControls</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'none'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>timeText</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'block'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>disableModeButtons</span><span class="s7">(</span><span class="s11">false</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Re-enable mode buttons</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>startButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Re-enable start button</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>resetButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> </span><span class="s11">false</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Re-enable reset button</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">            </span></span><span class="s1">// Apply the new time to the current mode (resets timer if needed)</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>setMode</span><span class="s7">(</span><span class="s1">currentMode</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Enables or disables the ability to click and edit the time</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> enableEditing</span><span class="s7">(</span><span class="s1">canEdit</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">canEdit</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timerDisplay</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">cursor </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'pointer'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timerDisplay</span><span class="s7">.</span><span class="s1">removeEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> showEditInput</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Remove to prevent double attach</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timerDisplay</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> showEditInput</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timerDisplay</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">cursor </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'default'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>timerDisplay</span><span class="s7">.</span><span class="s1">removeEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> showEditInput</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Disables/enables mode selection buttons</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> disableModeButtons</span><span class="s7">(</span><span class="s1">disable</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>workModeButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> disable</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>shortBreakModeButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> disable</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>longBreakModeButton</span><span class="s7">.</span><span class="s1">disabled </span><span class="s7">=</span><span class="s1"> disable</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Function to generate and display an LLM message</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">async</span><span class="s1"> </span><span class="s11">function</span><span class="s1"> generateLlmMessage</span><span class="s7">(</span><span class="s1">sessionType</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmOutputDiv</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">add</span><span class="s7">(</span><span class="s8">'visible'</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Show LLM area</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmMessageText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> </span><span class="s8">''</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Clear previous message</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmLoadingSpinner</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'block'</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Show spinner</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">let</span><span class="s1"> prompt </span><span class="s7">=</span><span class="s1"> </span><span class="s8">""</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">sessionType </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'work'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>prompt </span><span class="s7">=</span><span class="s4"> </span><span class="s1">"Provide a very short, encouraging message for someone who just finished a work session, or a quick productivity insight. Max 20 words. Start with an emoji like ✨."</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">sessionType </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'shortBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>prompt </span><span class="s7">=</span><span class="s4"> </span><span class="s1">"Provide a very short, refreshing message for someone starting or finishing a short break, or a quick mindfulness tip. Max 20 words. Start with an emoji like ✨."</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">sessionType </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'longBreak'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>prompt </span><span class="s7">=</span><span class="s4"> </span><span class="s1">"Provide a very short, encouraging message for someone who just finished a long break, or a tip for returning to focus. Max 20 words. Start with an emoji like ✨."</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                 </span>prompt </span><span class="s7">=</span><span class="s4"> </span><span class="s1">"Provide a very short, general motivational message or a quick productivity tip. Max 20 words. Start with an emoji like ✨."</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">try</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">let</span><span class="s1"> chatHistory </span><span class="s7">=</span><span class="s1"> </span><span class="s7">[];</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>chatHistory</span><span class="s7">.</span><span class="s1">push</span><span class="s7">({</span><span class="s1"> role</span><span class="s7">:</span><span class="s1"> </span><span class="s8">"user"</span><span class="s7">,</span><span class="s1"> parts</span><span class="s7">:</span><span class="s1"> </span><span class="s7">[{</span><span class="s1"> text</span><span class="s7">:</span><span class="s1"> prompt </span><span class="s7">}]</span><span class="s1"> </span><span class="s7">});</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">const</span><span class="s1"> payload </span><span class="s7">=</span><span class="s1"> </span><span class="s7">{</span><span class="s1"> contents</span><span class="s7">:</span><span class="s1"> chatHistory </span><span class="s7">};</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s11">const</span><span class="s4"> apiKey </span><span class="s7">=</span><span class="s4"> </span><span class="s8">""</span><span class="s4"> </span><span class="s1">// If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span></span><span class="s11">const</span><span class="s4"> apiUrl </span><span class="s7">=</span><span class="s4"> </span><span class="s1">`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=</span><span class="s7">${</span><span class="s4">apiKey</span><span class="s7">}</span><span class="s1">`</span><span class="s7">;</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">const</span><span class="s1"> response </span><span class="s7">=</span><span class="s1"> </span><span class="s11">await</span><span class="s1"> fetch</span><span class="s7">(</span><span class="s1">apiUrl</span><span class="s7">,</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>method</span><span class="s7">:</span><span class="s1"> </span><span class="s8">'POST'</span><span class="s7">,</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                    </span>headers</span><span class="s7">:</span><span class="s4"> </span><span class="s7">{</span><span class="s4"> </span><span class="s1">'Content-Type'</span><span class="s7">:</span><span class="s4"> </span><span class="s1">'application/json'</span><span class="s4"> </span><span class="s7">},</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>body</span><span class="s7">:</span><span class="s1"> </span><span class="s12">JSON</span><span class="s7">.</span><span class="s1">stringify</span><span class="s7">(</span><span class="s1">payload</span><span class="s7">)</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s7">});</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(!</span><span class="s1">response</span><span class="s7">.</span><span class="s1">ok</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s11">throw</span><span class="s1"> </span><span class="s11">new</span><span class="s1"> </span><span class="s12">Error</span><span class="s7">(</span><span class="s8">`HTTP error! status: </span><span class="s7">${</span><span class="s1">response</span><span class="s7">.</span><span class="s1">status</span><span class="s7">}</span><span class="s8">`</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">const</span><span class="s1"> result </span><span class="s7">=</span><span class="s1"> </span><span class="s11">await</span><span class="s1"> response</span><span class="s7">.</span><span class="s1">json</span><span class="s7">();</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">result</span><span class="s7">.</span><span class="s1">candidates </span><span class="s7">&amp;&amp;</span><span class="s1"> result</span><span class="s7">.</span><span class="s1">candidates</span><span class="s7">.</span><span class="s1">length </span><span class="s7">&gt;</span><span class="s1"> </span><span class="s13">0</span><span class="s1"> </span><span class="s7">&amp;&amp;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>result</span><span class="s7">.</span><span class="s1">candidates</span><span class="s7">[</span><span class="s13">0</span><span class="s7">].</span><span class="s1">content </span><span class="s7">&amp;&amp;</span><span class="s1"> result</span><span class="s7">.</span><span class="s1">candidates</span><span class="s7">[</span><span class="s13">0</span><span class="s7">].</span><span class="s1">content</span><span class="s7">.</span><span class="s1">parts </span><span class="s7">&amp;&amp;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>result</span><span class="s7">.</span><span class="s1">candidates</span><span class="s7">[</span><span class="s13">0</span><span class="s7">].</span><span class="s1">content</span><span class="s7">.</span><span class="s1">parts</span><span class="s7">.</span><span class="s1">length </span><span class="s7">&gt;</span><span class="s1"> </span><span class="s13">0</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span></span><span class="s11">const</span><span class="s1"> text </span><span class="s7">=</span><span class="s1"> result</span><span class="s7">.</span><span class="s1">candidates</span><span class="s7">[</span><span class="s13">0</span><span class="s7">].</span><span class="s1">content</span><span class="s7">.</span><span class="s1">parts</span><span class="s7">[</span><span class="s13">0</span><span class="s7">].</span><span class="s1">text</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>llmMessageText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> text</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">else</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                    </span>llmMessageText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> </span><span class="s8">"✨ Couldn't fetch a tip. Try again later!"</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">catch</span><span class="s1"> </span><span class="s7">(</span><span class="s1">error</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>console</span><span class="s7">.</span><span class="s1">error</span><span class="s7">(</span><span class="s8">'Error calling Gemini API:'</span><span class="s7">,</span><span class="s1"> error</span><span class="s7">);</span></p>
-<p class="p8"><span class="s4"><span class="Apple-converted-space">                </span>llmMessageText</span><span class="s7">.</span><span class="s4">textContent </span><span class="s7">=</span><span class="s4"> </span><span class="s1">"✨ Error: Could not load tip. Check console."</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span><span class="s1"> </span><span class="s11">finally</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>llmLoadingSpinner</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'none'</span><span class="s7">;</span><span class="s1"> </span><span class="s14">// Hide spinner</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Function to hide the LLM message area</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s11">function</span><span class="s1"> hideLlmMessage</span><span class="s7">()</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmOutputDiv</span><span class="s7">.</span><span class="s1">classList</span><span class="s7">.</span><span class="s1">remove</span><span class="s7">(</span><span class="s8">'visible'</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmMessageText</span><span class="s7">.</span><span class="s1">textContent </span><span class="s7">=</span><span class="s1"> </span><span class="s8">''</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span>llmLoadingSpinner</span><span class="s7">.</span><span class="s1">style</span><span class="s7">.</span><span class="s1">display </span><span class="s7">=</span><span class="s1"> </span><span class="s8">'none'</span><span class="s7">;</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">}</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Event Listeners</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>startButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> startTimer</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>pauseButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> pauseTimer</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>resetButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> resetTimer</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>messageCloseButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> hideMessage</span><span class="s7">);</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>workModeButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> </span><span class="s7">()</span><span class="s1"> </span><span class="s7">=&gt;</span><span class="s1"> setMode</span><span class="s7">(</span><span class="s8">'work'</span><span class="s7">));</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>shortBreakModeButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> </span><span class="s7">()</span><span class="s1"> </span><span class="s7">=&gt;</span><span class="s1"> setMode</span><span class="s7">(</span><span class="s8">'shortBreak'</span><span class="s7">));</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>longBreakModeButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> </span><span class="s7">()</span><span class="s1"> </span><span class="s7">=&gt;</span><span class="s1"> setMode</span><span class="s7">(</span><span class="s8">'longBreak'</span><span class="s7">));</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Inline edit listeners</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>confirmEditButton</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'click'</span><span class="s7">,</span><span class="s1"> hideEditInputAndApply</span><span class="s7">);</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>timeEditInput</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'keydown'</span><span class="s7">,</span><span class="s1"> </span><span class="s7">(</span><span class="s1">event</span><span class="s7">)</span><span class="s1"> </span><span class="s7">=&gt;</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s11">if</span><span class="s1"> </span><span class="s7">(</span><span class="s1">event</span><span class="s7">.</span><span class="s1">key </span><span class="s7">===</span><span class="s1"> </span><span class="s8">'Enter'</span><span class="s7">)</span><span class="s1"> </span><span class="s7">{</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">                </span>hideEditInputAndApply</span><span class="s7">();</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">            </span></span><span class="s7">}</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span></span><span class="s7">});</span></p>
-<p class="p4"><span class="s1"><span class="Apple-converted-space">        </span>timeEditInput</span><span class="s7">.</span><span class="s1">addEventListener</span><span class="s7">(</span><span class="s8">'blur'</span><span class="s7">,</span><span class="s1"> hideEditInputAndApply</span><span class="s7">);</span><span class="s1"> </span><span class="s14">// Apply on blur (click outside)</span></p>
-<p class="p6"><span class="s10"></span><br></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span></span><span class="s1">// Initial setup</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span>setMode</span><span class="s7">(</span><span class="s8">'work'</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Initialize to work mode and set display</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span>enableEditing</span><span class="s7">(</span><span class="s11">true</span><span class="s7">);</span><span class="s4"> </span><span class="s1">// Enable editing from the start</span></p>
-<p class="p5"><span class="s4"><span class="Apple-converted-space">        </span>hideLlmMessage</span><span class="s7">();</span><span class="s4"> </span><span class="s1">// Ensure LLM message is hidden on load</span></p>
-<p class="p1"><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">&lt;/</span><span class="s1">script</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;/</span><span class="s1">body</span><span class="s3">&gt;</span></p>
-<p class="p1"><span class="s3">&lt;/</span><span class="s1">html</span><span class="s3">&gt;</span></p>
+    <div class="pomodoro-container">
+        <div class="mode-buttons">
+            <button class="mode-button active" id="work-mode">Work</button>
+            <button class="mode-button" id="short-break-mode">Short Break</button>
+            <button class="mode-button" id="long-break-mode">Long Break</button>
+        </div>
+
+        <div class="timer-display" id="timer">
+            <span id="time-text">25:00</span>
+            <div class="edit-controls" style="display: none;">
+                <input type="number" id="time-edit-input" value="25" min="1" max="120">
+                <button id="confirm-edit-button">✔</button>
+            </div>
+        </div>
+
+        <div class="control-buttons">
+            <button id="start-button">Start</button>
+            <button id="pause-button" disabled>Pause</button>
+            <button id="reset-button">Reset</button>
+        </div>
+
+        <!-- LLM Output Area -->
+        <div class="llm-output" id="llm-output">
+            <span id="llm-message-text"></span>
+            <div class="loading-spinner" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Message Box HTML -->
+    <div id="message-overlay" class="message-overlay">
+        <div class="message-box">
+            <p id="message-text"></p>
+            <button id="message-close-button">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const timerDisplay = document.getElementById('timer');
+        const timeText = document.getElementById('time-text');
+        const editControls = document.querySelector('.edit-controls');
+        const timeEditInput = document.getElementById('time-edit-input');
+        const confirmEditButton = document.getElementById('confirm-edit-button');
+
+        const startButton = document.getElementById('start-button');
+        const pauseButton = document.getElementById('pause-button');
+        const resetButton = document.getElementById('reset-button');
+        const workModeButton = document.getElementById('work-mode');
+        const shortBreakModeButton = document.getElementById('short-break-mode');
+        const longBreakModeButton = document.getElementById('long-break-mode');
+
+        // Message Box Elements
+        const messageOverlay = document.getElementById('message-overlay');
+        const messageText = document.getElementById('message-text');
+        const messageCloseButton = document.getElementById('message-close-button');
+
+        // LLM Output Elements
+        const llmOutputDiv = document.getElementById('llm-output');
+        const llmMessageText = document.getElementById('llm-message-text');
+        const llmLoadingSpinner = llmOutputDiv.querySelector('.loading-spinner');
+
+
+        // Initial durations in seconds
+        let WORK_TIME = 25 * 60;
+        let SHORT_BREAK_TIME = 5 * 60;
+        let LONG_BREAK_TIME = 15 * 60;
+
+        let currentMode = 'work';
+        let timeLeft = WORK_TIME;
+        let timerInterval;
+        let isRunning = false;
+        let workSessions = 0; // Tracks completed work sessions for long break
+
+        // Function to show a custom message box
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageOverlay.classList.add('visible');
+        }
+
+        // Function to hide the custom message box
+        function hideMessage() {
+            messageOverlay.classList.remove('visible');
+        }
+
+        // Formats seconds into MM:SS string
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        // Updates the displayed time
+        function updateTimerDisplay() {
+            timeText.textContent = formatTime(timeLeft);
+        }
+
+        // Sets the timer to a specific mode (work, shortBreak, longBreak)
+        function setMode(mode) {
+            currentMode = mode;
+            clearInterval(timerInterval); // Stop any running timer
+            isRunning = false; // Ensure timer is not running
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            enableEditing(true); // Re-enable editing when mode is set/reset
+            hideLlmMessage(); // Hide LLM message when mode changes
+
+            // Update active mode button styling
+            workModeButton.classList.remove('active');
+            shortBreakModeButton.classList.remove('active');
+            longBreakModeButton.classList.remove('active');
+
+            if (mode === 'work') {
+                timeLeft = WORK_TIME;
+                workModeButton.classList.add('active');
+            } else if (mode === 'shortBreak') {
+                timeLeft = SHORT_BREAK_TIME;
+                shortBreakModeButton.classList.add('active');
+            } else if (mode === 'longBreak') {
+                timeLeft = LONG_BREAK_TIME;
+                longBreakModeButton.classList.add('active');
+            }
+            updateTimerDisplay(); // Update display to new mode's time
+        }
+
+        // Starts the timer countdown
+        function startTimer() {
+            if (isRunning) return; // Prevent multiple starts
+            isRunning = true;
+            startButton.disabled = true;
+            pauseButton.disabled = false;
+            disableModeButtons(true); // Disable mode buttons during countdown
+            enableEditing(false); // Disable editing when timer runs
+            hideLlmMessage(); // Hide LLM message when starting a new session
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    startButton.disabled = false;
+                    pauseButton.disabled = true;
+                    disableModeButtons(false); // Re-enable mode buttons after countdown
+                    enableEditing(true); // Re-enable editing
+
+                    showMessage(`${currentMode === 'work' ? 'Work' : 'Break'} session finished!`);
+                    generateLlmMessage(currentMode); // Generate and show LLM message
+
+                    if (currentMode === 'work') {
+                        workSessions++;
+                        if (workSessions % 4 === 0) { // After 4 work sessions, go to long break
+                            setMode('longBreak');
+                        } else {
+                            setMode('shortBreak');
+                        }
+                    } else { // After a break, go back to work mode
+                        setMode('work');
+                    }
+                }
+            }, 1000); // Update every second
+        }
+
+        // Pauses the timer
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            disableModeButtons(false); // Re-enable mode buttons on pause
+            enableEditing(true); // Re-enable editing
+        }
+
+        // Resets the timer to its initial time for the current mode
+        function resetTimer() {
+            pauseTimer(); // Stop and reset running state
+            // Restore current mode's time based on its last set value
+            if (currentMode === 'work') {
+                timeLeft = WORK_TIME;
+            } else if (currentMode === 'shortBreak') {
+                timeLeft = SHORT_BREAK_TIME;
+            } else if (currentMode === 'longBreak') {
+                timeLeft = LONG_BREAK_TIME;
+            }
+            updateTimerDisplay();
+            workSessions = 0; // Reset work sessions count on full reset
+            hideLlmMessage(); // Hide LLM message on reset
+        }
+
+        // Shows the input field for editing the time
+        function showEditInput() {
+            if (isRunning) return; // Cannot edit while timer is running
+
+            // Populate input with current mode's minutes
+            let currentMinutes;
+            if (currentMode === 'work') currentMinutes = WORK_TIME / 60;
+            else if (currentMode === 'shortBreak') currentMinutes = SHORT_BREAK_TIME / 60;
+            else if (currentMode === 'longBreak') currentMinutes = LONG_BREAK_TIME / 60;
+
+            timeEditInput.value = currentMinutes;
+
+            timeText.style.display = 'none';
+            editControls.style.display = 'flex'; // Use flex to center input and button
+            timeEditInput.focus(); // Focus on the input field
+            timeEditInput.select(); // Select the text in the input
+            disableModeButtons(true); // Disable mode buttons during edit
+            startButton.disabled = true; // Disable start button during edit
+            resetButton.disabled = true; // Disable reset button during edit
+            hideLlmMessage(); // Hide LLM message during edit
+        }
+
+        // Hides the input field and applies the new time
+        function hideEditInputAndApply() {
+            let newMinutes = parseInt(timeEditInput.value);
+
+            if (isNaN(newMinutes) || newMinutes < 1) {
+                showMessage("Please enter a valid number of minutes (at least 1).");
+                // Reset input to previous valid value
+                if (currentMode === 'work') newMinutes = WORK_TIME / 60;
+                else if (currentMode === 'shortBreak') newMinutes = SHORT_BREAK_TIME / 60;
+                else if (currentMode === 'longBreak') newMinutes = LONG_BREAK_TIME / 60;
+                timeEditInput.value = newMinutes; // Restore previous value
+            } else {
+                // Update the correct time constant based on current mode
+                if (currentMode === 'work') WORK_TIME = newMinutes * 60;
+                else if (currentMode === 'shortBreak') SHORT_BREAK_TIME = newMinutes * 60;
+                else if (currentMode === 'longBreak') LONG_BREAK_TIME = newMinutes * 60;
+            }
+
+            // Restore display and re-enable controls
+            editControls.style.display = 'none';
+            timeText.style.display = 'block';
+            disableModeButtons(false); // Re-enable mode buttons
+            startButton.disabled = false; // Re-enable start button
+            resetButton.disabled = false; // Re-enable reset button
+
+            // Apply the new time to the current mode (resets timer if needed)
+            setMode(currentMode);
+        }
+
+        // Enables or disables the ability to click and edit the time
+        function enableEditing(canEdit) {
+            if (canEdit) {
+                timerDisplay.style.cursor = 'pointer';
+                timerDisplay.removeEventListener('click', showEditInput); // Remove to prevent double attach
+                timerDisplay.addEventListener('click', showEditInput);
+            } else {
+                timerDisplay.style.cursor = 'default';
+                timerDisplay.removeEventListener('click', showEditInput);
+            }
+        }
+
+        // Disables/enables mode selection buttons
+        function disableModeButtons(disable) {
+            workModeButton.disabled = disable;
+            shortBreakModeButton.disabled = disable;
+            longBreakModeButton.disabled = disable;
+        }
+
+        // Function to generate and display an LLM message
+        async function generateLlmMessage(sessionType) {
+            llmOutputDiv.classList.add('visible'); // Show LLM area
+            llmMessageText.textContent = ''; // Clear previous message
+            llmLoadingSpinner.style.display = 'block'; // Show spinner
+
+            let prompt = "";
+            if (sessionType === 'work') {
+                prompt = "Provide a very short, encouraging message for someone who just finished a work session, or a quick productivity insight. Max 20 words. Start with an emoji like ✨.";
+            } else if (sessionType === 'shortBreak') {
+                prompt = "Provide a very short, refreshing message for someone starting or finishing a short break, or a quick mindfulness tip. Max 20 words. Start with an emoji like ✨.";
+            } else if (sessionType === 'longBreak') {
+                prompt = "Provide a very short, encouraging message for someone who just finished a long break, or a tip for returning to focus. Max 20 words. Start with an emoji like ✨.";
+            } else {
+                 prompt = "Provide a very short, general motivational message or a quick productivity tip. Max 20 words. Start with an emoji like ✨.";
+            }
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "" // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    llmMessageText.textContent = text;
+                } else {
+                    llmMessageText.textContent = "✨ Couldn't fetch a tip. Try again later!";
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                llmMessageText.textContent = "✨ Error: Could not load tip. Check console.";
+            } finally {
+                llmLoadingSpinner.style.display = 'none'; // Hide spinner
+            }
+        }
+
+        // Function to hide the LLM message area
+        function hideLlmMessage() {
+            llmOutputDiv.classList.remove('visible');
+            llmMessageText.textContent = '';
+            llmLoadingSpinner.style.display = 'none';
+        }
+
+
+        // Event Listeners
+        startButton.addEventListener('click', startTimer);
+        pauseButton.addEventListener('click', pauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+        messageCloseButton.addEventListener('click', hideMessage);
+
+        workModeButton.addEventListener('click', () => setMode('work'));
+        shortBreakModeButton.addEventListener('click', () => setMode('shortBreak'));
+        longBreakModeButton.addEventListener('click', () => setMode('longBreak'));
+
+        // Inline edit listeners
+        confirmEditButton.addEventListener('click', hideEditInputAndApply);
+        timeEditInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                hideEditInputAndApply();
+            }
+        });
+        timeEditInput.addEventListener('blur', hideEditInputAndApply); // Apply on blur (click outside)
+
+        // Initial setup
+        setMode('work'); // Initialize to work mode and set display
+        enableEditing(true); // Enable editing from the start
+        hideLlmMessage(); // Ensure LLM message is hidden on load
+    </script>
 </body>
 </html>
